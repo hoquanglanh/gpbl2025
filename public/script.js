@@ -15,16 +15,15 @@ async function fetchData() {
 
         document.getElementById('light-state').textContent = data.lightState ? 'BẬT' : 'TẮT';
         document.getElementById('light-state').style.color = data.lightState ? 'green' : 'red';
-        
-        // document.getElementById('fire-state').textContent = data.fireDetected ? 'CÓ LỬA!' : 'AN TOÀN';
-        // document.getElementById('fire-state').style.color = data.fireDetected ? 'red' : 'green';
-        
-        // Nếu phát hiện lửa, có thể thêm cảnh báo
-        // if (data.fireDetected) {
-        //     document.getElementById('fire-state').style.animation = 'blink 1s infinite';
-        // } else {
-        //     document.getElementById('fire-state').style.animation = 'none';
-        // }
+
+        // Cập nhật trạng thái phát hiện lửa
+        const fireStatus = document.getElementById('fire-status');
+        fireStatus.textContent = data.fireDetected ? '🔥 PHÁT HIỆN LỬA!' : '✅ AN TOÀN';
+        fireStatus.style.color = data.fireDetected ? 'red' : 'green';
+
+        if (data.fireDetected) {
+            alert('🔥 CẢNH BÁO: Phát hiện lửa! Kiểm tra ngay.');
+        }
 
     } catch (error) {
         console.error('Lỗi khi lấy dữ liệu:', error);

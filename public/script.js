@@ -31,46 +31,46 @@ async function fetchData() {
 }
 
 // ✅ Hàm điều khiển quạt
-async function controlFan(state) {
-    try {
-        const response = await fetch('/api/control-fan', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ state: state === 'on' }) // true nếu "on", false nếu "off"
-        });
-        const data = await response.json();
+// async function controlFan(state) {
+//     try {
+//         const response = await fetch('/api/control-fan', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({ state: state === 'on' }) // true nếu "on", false nếu "off"
+//         });
+//         const data = await response.json();
         
-        document.getElementById('fan-state').textContent = data.state ? 'BẬT' : 'TẮT';
-        document.getElementById('fan-state').style.color = data.state ? 'green' : 'red';
-    } catch (error) {
-        console.error('Lỗi khi điều khiển quạt:', error);
-    }
-}
+//         document.getElementById('fan-state').textContent = data.state ? 'BẬT' : 'TẮT';
+//         document.getElementById('fan-state').style.color = data.state ? 'green' : 'red';
+//     } catch (error) {
+//         console.error('Lỗi khi điều khiển quạt:', error);
+//     }
+// }
 
 // Thêm hàm này vào script
-async function controlLight(state) {
-    try {
-        const response = await fetch('/api/control-light', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ state: state === 'on' })
-        });
-        const data = await response.json();
+// async function controlLight(state) {
+//     try {
+//         const response = await fetch('/api/control-light', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({ state: state === 'on' })
+//         });
+//         const data = await response.json();
         
-        document.getElementById('light-state').textContent = data.state ? 'BẬT' : 'TẮT';
-        document.getElementById('light-state').style.color = data.state ? 'green' : 'red';
-    } catch (error) {
-        console.error('Lỗi khi điều khiển đèn:', error);
-    }
-}
+//         document.getElementById('light-state').textContent = data.state ? 'BẬT' : 'TẮT';
+//         document.getElementById('light-state').style.color = data.state ? 'green' : 'red';
+//     } catch (error) {
+//         console.error('Lỗi khi điều khiển đèn:', error);
+//     }
+// }
 
 // Thêm event listeners cho nút điều khiển đèn
-document.getElementById('light-on-btn').addEventListener('click', () => controlLight('on'));
-document.getElementById('light-off-btn').addEventListener('click', () => controlLight('off'));
+// document.getElementById('light-on-btn').addEventListener('click', () => controlLight('on'));
+// document.getElementById('light-off-btn').addEventListener('click', () => controlLight('off'));
 
 // Gán sự kiện cho nút điều khiển
-document.getElementById('fan-on-btn').addEventListener('click', () => controlFan('on'));
-document.getElementById('fan-off-btn').addEventListener('click', () => controlFan('off'));
+// document.getElementById('fan-on-btn').addEventListener('click', () => controlFan('on'));
+// document.getElementById('fan-off-btn').addEventListener('click', () => controlFan('off'));
 
 // ✅ Cập nhật dữ liệu mỗi 2 giây
 setInterval(fetchData, 2000);

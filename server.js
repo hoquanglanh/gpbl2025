@@ -5,7 +5,8 @@ const port = 3000;
 let currentData = { temperature: 0, humidity: 0, distance: 0, light: 0 };
 let fanState = false;
 let lightState = false;
-let fireDetected = false; // Thêm biến lưu trạng thái phát hiện lửa
+let manualLightControl = false; // Thêm biến cho chế độ điều khiển đèn
+let fireDetected = false;
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -16,13 +17,24 @@ app.post('/api/temperature', (req, res) => {
     if (temperature !== undefined && humidity !== undefined) {
         currentData = { temperature, humidity, distance, light };
         fanState = temperature > 30 && distance < 50;
-        lightState = light < 500;
-        fireDetected = newFireState; // Cập nhật trạng thái phát hiện lửa
+        
+        // Chỉ tự động điều khiển đèn nếu không ở chế độ manual
+        if (!manualLightControl) {
+            lightState = light < 500;
+        }
+        
+        fireDetected = newFireState;
 
         console.log(`🔥 Nhiệt độ: ${temperature}°C, Độ ẩm: ${humidity}%, Khoảng cách: ${distance}cm, Ánh sáng: ${light}`);
-        console.log(`Quạt: ${fanState ? 'BẬT' : 'TẮT'}, Đèn: ${lightState ? 'BẬT' : 'TẮT'}, Lửa: ${fireDetected ? 'PHÁT HIỆN' : 'KHÔNG'}`);
+        console.log(`Quạt: ${fanState ? 'BẬT' : 'TẮT'}, Đèn: ${lightState ? 'BẬT' : 'TẮT'}, Chế độ đèn: ${manualLightControl ? 'THỦ CÔNG' : 'TỰ ĐỘNG'}, Lửa: ${fireDetected ? 'PHÁT HIỆN' : 'KHÔNG'}`);
 
-        res.json({ message: 'Dữ liệu nhận thành công!', fanState, lightState, fireDetected });
+        res.json({ 
+            message: 'Dữ liệu nhận thành công!', 
+            fanState, 
+            lightState, 
+            manualLightControl,
+            fireDetected 
+        });
     } else {
         res.status(400).json({ message: 'Dữ liệu không hợp lệ!' });
     }
@@ -34,23 +46,54 @@ app.get('/api/current-data', (req, res) => {
         ...currentData, 
         fanState, 
         lightState,
+        manualLightControl,
         fireDetected 
     });
 });
 
-//Endpoint for Arduino to check device states
+// Endpoint for Arduino to check device states
 app.get('/api/device-states', (req, res) => {
     res.json({
         fanState,
-        lightState
+        lightState,
+        manualLightControl
     });
 });
 
 // API điều khiển đèn
 app.post('/api/control-light', (req, res) => {
-    const { state } = req.body;
-    lightState = state;
-    res.json({ state: lightState });
+    const { state, manual } = req.body;
+    
+    // Cập nhật chế độ điều khiển nếu được chỉ định
+    if (manual !== undefined) {
+        manualLightControl = manual;
+    }
+    
+    // Cập nhật trạng thái đèn
+    if (state !== undefined) {
+        lightState = state;
+    }
+    
+    res.json({ 
+        state: lightState,
+        manualControl: manualLightControl 
+    });
+});
+
+// API chuyển đổi chế độ điều khiển đèn
+app.post('/api/light-control-mode', (req, res) => {
+    const { manual } = req.body;
+    manualLightControl = manual;
+    
+    // Nếu chuyển sang chế độ tự động, cập nhật trạng thái dựa trên ánh sáng
+    if (!manual) {
+        lightState = currentData.light < 500;
+    }
+    
+    res.json({ 
+        manualControl: manualLightControl,
+        state: lightState 
+    });
 });
 
 // API điều khiển quạt
@@ -58,6 +101,14 @@ app.post('/api/control-fan', (req, res) => {
     const { state } = req.body;
     fanState = state;
     res.json({ state: fanState });
+});
+
+// API báo cháy
+app.post('/api/fireAlert', (req, res) => {
+    const { fireDetected: newFireState } = req.body;
+    fireDetected = newFireState;
+    console.log(`🔥 Fire Alert: ${fireDetected ? 'DETECTED' : 'CLEAR'}`);
+    res.json({ status: 'received', fireDetected });
 });
 
 app.listen(port, '0.0.0.0', () => {

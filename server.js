@@ -38,6 +38,14 @@ app.get('/api/current-data', (req, res) => {
     });
 });
 
+//Endpoint for Arduino to check device states
+app.get('/api/device-states', (req, res) => {
+    res.json({
+        fanState,
+        lightState
+    });
+});
+
 // API điều khiển đèn
 app.post('/api/control-light', (req, res) => {
     const { state } = req.body;
@@ -45,13 +53,13 @@ app.post('/api/control-light', (req, res) => {
     res.json({ state: lightState });
 });
 
-app.listen(port, '0.0.0.0', () => {
-    console.log(`🔥 Server đang chạy trên cổng ${port}`);
-});
-
 // API điều khiển quạt
 app.post('/api/control-fan', (req, res) => {
     const { state } = req.body;
-    fanState = state; // Cập nhật trạng thái quạt
+    fanState = state;
     res.json({ state: fanState });
+});
+
+app.listen(port, '0.0.0.0', () => {
+    console.log(`🔥 Server đang chạy trên cổng ${port}`);
 });

@@ -6,14 +6,14 @@ let currentData = { temperature: 0, humidity: 0, distance: 0, light: 0 };
 let fanState = false;
 let lightState = false;
 let manualLightControl = false; // Thêm biến cho chế độ điều khiển đèn
-// let fireDetected = false;
+let fireDetected = false;
 
 app.use(express.json());
 app.use(express.static('public'));
 
 app.post('/api/temperature', (req, res) => {
     // const { temperature, humidity, distance, light, fireDetected: newFireState } = req.body;
-    const { temperature, humidity, distance, light} = req.body;
+    const { temperature, humidity, distance, light, fire} = req.body;
 
     if (temperature !== undefined && humidity !== undefined) {
         currentData = { temperature, humidity, distance, light };
@@ -24,17 +24,16 @@ app.post('/api/temperature', (req, res) => {
             lightState = light < 500;
         }
         
-        // fireDetected = newFireState;
+        fireDetected = fire;
 
         console.log(`🔥 Nhiệt độ: ${temperature}°C, Độ ẩm: ${humidity}%, Khoảng cách: ${distance}cm, Ánh sáng: ${light}`);
-        // console.log(`Quạt: ${fanState ? 'BẬT' : 'TẮT'}, Đèn: ${lightState ? 'BẬT' : 'TẮT'}, Chế độ đèn: ${manualLightControl ? 'THỦ CÔNG' : 'TỰ ĐỘNG'}, Lửa: ${fireDetected ? 'PHÁT HIỆN' : 'KHÔNG'}`);
-        console.log(`Quạt: ${fanState ? 'BẬT' : 'TẮT'}, Đèn: ${lightState ? 'BẬT' : 'TẮT'}, Chế độ đèn: ${manualLightControl ? 'THỦ CÔNG' : 'TỰ ĐỘNG'}}`);
+        console.log(`Quạt: ${fanState ? 'BẬT' : 'TẮT'}, Đèn: ${lightState ? 'BẬT' : 'TẮT'}, Chế độ đèn: ${manualLightControl ? 'THỦ CÔNG' : 'TỰ ĐỘNG'}, Lửa: ${fireDetected ? 'PHÁT HIỆN' : 'KHÔNG'}`);
+        
         res.json({ 
             message: 'Dữ liệu nhận thành công!', 
             fanState, 
             lightState, 
-            manualLightControl,
-            // fireDetected 
+            fireDetected
         });
     } else {
         res.status(400).json({ message: 'Dữ liệu không hợp lệ!' });
@@ -48,7 +47,7 @@ app.get('/api/current-data', (req, res) => {
         fanState, 
         lightState,
         manualLightControl,
-        // fireDetected 
+        fireDetected 
     });
 });
 

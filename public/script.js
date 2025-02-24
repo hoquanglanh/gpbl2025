@@ -9,26 +9,26 @@ async function fetchData() {
         document.getElementById('distance').textContent = data.distance.toFixed(1) + " cm";
         document.getElementById('light').textContent = data.light;
 
-        // ✅ Hiển thị trạng thái quạt và đèn
         document.getElementById('fan-state').textContent = data.fanState ? 'BẬT' : 'TẮT';
         document.getElementById('fan-state').style.color = data.fanState ? 'green' : 'red';
 
         document.getElementById('light-state').textContent = data.lightState ? 'BẬT' : 'TẮT';
         document.getElementById('light-state').style.color = data.lightState ? 'green' : 'red';
 
-        // Cập nhật trạng thái phát hiện lửa
-        // const fireStatus = document.getElementById('fire-status');
-        // fireStatus.textContent = data.fireDetected ? '🔥 PHÁT HIỆN LỬA!' : '✅ AN TOÀN';
-        // fireStatus.style.color = data.fireDetected ? 'red' : 'green';
+        // Hiển thị trạng thái phát hiện lửa
+        const fireStatus = document.getElementById('fire-status');
+        fireStatus.textContent = data.fireDetected ? '🔥 PHÁT HIỆN LỬA!' : '✅ AN TOÀN';
+        fireStatus.style.color = data.fireDetected ? 'red' : 'green';
 
-        // if (data.fireDetected) {
-        //     alert('🔥 CẢNH BÁO: Phát hiện lửa! Kiểm tra ngay.');
-        // }
+        if (data.fireDetected) {
+            alert('🔥 CẢNH BÁO: Phát hiện lửa! Kiểm tra ngay.');
+        }
 
     } catch (error) {
         console.error('Lỗi khi lấy dữ liệu:', error);
     }
 }
+
 
 // ✅ Hàm điều khiển quạt
 // async function controlFan(state) {

@@ -13,7 +13,7 @@ app.use(express.static('public'));
 
 app.post('/api/temperature', (req, res) => {
     // const { temperature, humidity, distance, light, fireDetected: newFireState } = req.body;
-    const { temperature, humidity, distance, light, fire} = req.body;
+    const { temperature, humidity, distance, light, flameDetected } = req.body;
 
     if (temperature !== undefined && humidity !== undefined) {
         currentData = { temperature, humidity, distance, light };
@@ -24,7 +24,7 @@ app.post('/api/temperature', (req, res) => {
             lightState = light < 500;
         }
         
-        fireDetected = fire;
+        fireDetected = flameDetected;
 
         console.log(`🔥 Nhiệt độ: ${temperature}°C, Độ ẩm: ${humidity}%, Khoảng cách: ${distance}cm, Ánh sáng: ${light}`);
         console.log(`Quạt: ${fanState ? 'BẬT' : 'TẮT'}, Đèn: ${lightState ? 'BẬT' : 'TẮT'}, Chế độ đèn: ${manualLightControl ? 'THỦ CÔNG' : 'TỰ ĐỘNG'}, Lửa: ${fireDetected ? 'PHÁT HIỆN' : 'KHÔNG'}`);
@@ -102,14 +102,6 @@ app.post('/api/control-fan', (req, res) => {
     fanState = state;
     res.json({ state: fanState });
 });
-
-// API báo cháy
-// app.post('/api/fireAlert', (req, res) => {
-//     const { fireDetected: newFireState } = req.body;
-//     fireDetected = newFireState;
-//     console.log(`🔥 Fire Alert: ${fireDetected ? 'DETECTED' : 'CLEAR'}`);
-//     res.json({ status: 'received', fireDetected });
-// });
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`🔥 Server đang chạy trên cổng ${port}`);

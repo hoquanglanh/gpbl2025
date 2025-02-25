@@ -18,9 +18,12 @@ async function fetchData() {
         document.getElementById('light-state').textContent = data.lightState ? 'ON' : 'OFF';
         document.getElementById('light-state').style.color = data.lightState ? 'green' : 'red';
 
+        // Update shock status
+        document.getElementById('shock-state').textContent = data.shockDetected ? 'DETECTED' : 'CLEAR';
+        document.getElementById('shock-state').style.color = data.shockDetected ? 'red' : 'green';
+
         // Update fire detection status with enhanced visibility
         const fireStatus = document.getElementById('fire-status');
-        
         if (data.fireDetected) {
             fireStatus.innerHTML = `<span style="color: red; font-size: 1.2rem;">🚨 FIRE DETECTED!</span>`;
             fireStatus.classList.add('fire-alert');
